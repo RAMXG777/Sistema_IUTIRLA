@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión y Control de Tesis - IUTIRLA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        iutirlaBlue: '#1e3a8a',
+                        iutirlaRed: '#dc2626',
+                        iutirlaYellow: '#facc15',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 text-slate-800 font-sans">
+
+    <header class="bg-gradient-to-r from-iutirlaBlue to-blue-900 text-white shadow-lg border-b-4 border-iutirlaRed py-4 px-6 mb-8">
+        <div class="max-w-7xl mx-auto flex items-center gap-4">
+            <!-- Logo con fallback robusto -->
+            <div class="relative h-16 w-16 flex-shrink-0 bg-white rounded-xl shadow-md border-2 border-iutirlaRed overflow-hidden">
+                <img src="/static/logo.png"
+                     alt="Escudo Oficial IUTIRLA"
+                     class="h-full w-full object-contain p-1"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div style="display:none;"
+                     class="absolute inset-0 items-center justify-center bg-gradient-to-br from-iutirlaBlue to-blue-900 text-white font-black text-[11px] text-center leading-tight p-1 tracking-tighter">
+                    IUTIRLA
+                </div>
+            </div>
+            <div>
+                <h1 class="text-xl md:text-2xl font-extrabold tracking-wide text-white">I.U.T.I.R.L.A.</h1>
+                <p class="text-xs text-blue-200 font-medium">Instituto Universitario de Tecnología Industrial "Rodolfo Loero Arismendi"</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6 pb-12">
+
+        <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 lg:col-span-1">
+            <div class="flex items-center gap-2 mb-4 border-b pb-3">
+                <div class="w-3 h-3 bg-iutirlaRed rounded-full"></div>
+                <h2 class="text-base font-bold text-iutirlaBlue" id="titulo-seccion-form">Registrar Nueva Tesis</h2>
+            </div>
+
+            <form id="form-registrar" onsubmit="registrarTesis(event)" class="space-y-3 text-sm">
+                <div>
+                    <label class="block font-semibold text-gray-700 text-xs uppercase">Título del Trabajo</label>
+                    <input type="text" id="titulo" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs">
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 text-xs uppercase">Autor(es)</label>
+                    <input type="text" id="autor" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs">
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 text-xs uppercase">Tutor</label>
+                    <input type="text" id="tutor" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-semibold text-gray-700 text-xs uppercase">Carrera</label>
+                        <input type="text" id="carrera" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 text-xs uppercase">Año</label>
+                        <input type="number" id="anio" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 text-xs uppercase">Cota Digital (Ej: INF-2026-01)</label>
+                    <input type="text" id="cota" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs">
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 text-xs uppercase">Resumen</label>
+                    <textarea id="resumen" rows="2" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs"></textarea>
+                </div>
+                <div id="contenedor-archivo">
+                    <label class="block font-semibold text-gray-700 text-xs uppercase">Archivo PDF Digital</label>
+                    <input type="file" id="archivo" accept="application/pdf" class="w-full mt-1 text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-iutirlaBlue hover:file:bg-blue-100">
+                </div>
+                <button type="submit" class="w-full bg-iutirlaBlue text-white font-medium py-2 rounded-lg hover:bg-blue-900 transition shadow text-xs uppercase tracking-wider">
+                    Guardar Tesis en el Sistema
+                </button>
+                <button type="button" id="btn-cancelar" onclick="restaurarFormularioRegistro()" class="w-full bg-gray-300 text-gray-700 font-medium py-1.5 rounded-lg hover:bg-gray-400 transition text-xs uppercase tracking-wider hidden mt-1">
+                    Cancelar Edición
+                </button>
+            </form>
+        </section>
+
+        <section class="space-y-6 lg:col-span-2">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                <div class="flex items-center gap-2 mb-4 border-b pb-3">
+                    <div class="w-3 h-3 bg-iutirlaBlue rounded-full"></div>
+                    <h2 class="text-base font-bold text-iutirlaBlue">Catálogo y Control de Solicitudes</h2>
+                </div>
+
+                <div class="flex gap-2">
+                    <input type="text" id="input-buscar" placeholder="Escriba título, autor, carrera o cota para buscar..." class="flex-1 p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-iutirlaBlue outline-none">
+                    <button onclick="buscarTesis()" class="bg-iutirlaRed text-white px-5 py-2.5 rounded-lg text-sm hover:bg-red-700 transition font-medium shadow-sm">
+                        Buscar Tesis
+                    </button>
+                </div>
+
+                <div id="resultados-busqueda" class="mt-4 space-y-4 max-h-[500px] overflow-y-auto pr-1">
+                    <p class="text-sm text-gray-400 italic text-center py-6">Realice una búsqueda o registre una tesis para comenzar la gestión de atención al estudiante.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-white text-center py-4 text-xs border-t border-slate-800">
+        <p>IUTIRLA Extensión • Sistema Automatizado de Gestión de Tesis y Trabajos de Grado © 2026</p>
+    </footer>
+
+    <script>
+        const API_URL = window.location.origin;
+        let tesisEditandoId = null;
+        const tesisCache = {};
+
+        // Escapa HTML para evitar problemas con apóstrofos, comillas o etiquetas
+        function esc(s) {
+            return String(s ?? '').replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        async function registrarTesis(e) {
+            e.preventDefault();
+
+            const titulo = document.getElementById("titulo").value;
+            const autor = document.getElementById("autor").value;
+            const tutor = document.getElementById("tutor").value;
+            const carrera = document.getElementById("carrera").value;
+            const anio = document.getElementById("anio").value;
+            const resumen = document.getElementById("resumen").value;
+            const cota = document.getElementById("cota").value;
+
+            if (tesisEditandoId !== null) {
+                const formData = new URLSearchParams();
+                formData.append("titulo", titulo);
+                formData.append("autor", autor);
+                formData.append("tutor", tutor);
+                formData.append("carrera", carrera);
+                formData.append("anio", anio);
+                formData.append("resumen", resumen);
+                formData.append("cota_digital", cota);
+
+                const res = await fetch(`${API_URL}/tesis/actualizar/${tesisEditandoId}`, {
+                    method: "PUT",
+                    body: formData
+                });
+
+                if (res.ok) {
+                    alert("¡Tesis actualizada con éxito en el sistema!");
+                    restaurarFormularioRegistro();
+                    buscarTesis();
+                } else {
+                    alert("Error al actualizar la tesis. Verifique los datos.");
+                }
+            } else {
+                const archivoInput = document.getElementById("archivo").files[0];
+                if (!archivoInput) {
+                    alert("Debe seleccionar un archivo PDF para registrar la tesis.");
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("titulo", titulo);
+                formData.append("autor", autor);
+                formData.append("tutor", tutor);
+                formData.append("carrera", carrera);
+                formData.append("anio", anio);
+                formData.append("resumen", resumen);
+                formData.append("cota_digital", cota);
+                formData.append("archivo", archivoInput);
+
+                const res = await fetch(`${API_URL}/tesis/registrar`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (res.ok) {
+                    alert("¡Tesis registrada con éxito en el servidor del IUTIRLA!");
+                    restaurarFormularioRegistro();
+                    buscarTesis();
+                } else {
+                    alert("Error al registrar la tesis. Verifique los datos o si la cota ya existe.");
+                }
+            }
+        }
+
+        function prepararEdicion(id) {
+            const t = tesisCache[id];
+            if (!t) return;
+
+            tesisEditandoId = id;
+            document.getElementById("titulo").value = t.titulo;
+            document.getElementById("autor").value = t.autor;
+            document.getElementById("tutor").value = t.tutor;
+            document.getElementById("carrera").value = t.carrera;
+            document.getElementById("anio").value = t.anio;
+            document.getElementById("resumen").value = t.resumen;
+            document.getElementById("cota").value = t.cota_digital;
+
+            document.getElementById("titulo-seccion-form").textContent = "Editar Tesis Registrada";
+            const botonGuardar = document.querySelector("#form-registrar button[type='submit']");
+            botonGuardar.textContent = "Actualizar Tesis en el Sistema";
+            botonGuardar.classList.remove("bg-iutirlaBlue", "hover:bg-blue-900");
+            botonGuardar.classList.add("bg-amber-600", "hover:bg-amber-700");
+
+            document.getElementById("btn-cancelar").classList.remove("hidden");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function restaurarFormularioRegistro() {
+            document.getElementById("form-registrar").reset();
+            tesisEditandoId = null;
+            document.getElementById("titulo-seccion-form").textContent = "Registrar Nueva Tesis";
+
+            const botonGuardar = document.querySelector("#form-registrar button[type='submit']");
+            botonGuardar.textContent = "Guardar Tesis en el Sistema";
+            botonGuardar.classList.remove("bg-amber-600", "hover:bg-amber-700");
+            botonGuardar.classList.add("bg-iutirlaBlue", "hover:bg-blue-900");
+
+            document.getElementById("btn-cancelar").classList.add("hidden");
+        }
+
+        async function eliminarTesis(tesisId) {
+            if (!confirm("¿Estás seguro de que deseas eliminar esta tesis del sistema? Esta acción eliminará el registro y el archivo PDF asociado.")) {
+                return;
+            }
+
+            const res = await fetch(`${API_URL}/tesis/eliminar/${tesisId}`, {
+                method: "DELETE"
+            });
+
+            if (res.ok) {
+                alert("Tesis eliminada correctamente.");
+                buscarTesis();
+            } else {
+                alert("Error al intentar eliminar la tesis.");
+            }
+        }
+
+        async function buscarTesis() {
+            const texto = document.getElementById("input-buscar").value;
+            const res = await fetch(`${API_URL}/tesis/buscar?texto=${encodeURIComponent(texto)}`);
+            const tesisList = await res.json();
+
+            const contenedor = document.getElementById("resultados-busqueda");
+            contenedor.innerHTML = "";
+
+            if (tesisList.length === 0) {
+                contenedor.innerHTML = `<p class="text-sm text-gray-500 italic text-center py-4">No se encontraron tesis registradas con ese criterio.</p>`;
+                return;
+            }
+
+            tesisList.forEach(t => {
+                tesisCache[t.id] = t; // Guardamos para editar sin pasar strings
+
+                contenedor.innerHTML += `
+                    <div class="p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm space-y-2 hover:bg-blue-50/30 transition">
+                        <div class="flex justify-between items-start gap-2">
+                            <h3 class="font-bold text-iutirlaBlue text-base">${esc(t.titulo)}</h3>
+                            <span class="text-xs bg-gray-200 text-gray-700 px-2.5 py-1 rounded-md font-mono font-semibold whitespace-nowrap">${esc(t.cota_digital)}</span>
+                        </div>
+                        <p class="text-gray-600 text-xs">
+                            <strong>Autor:</strong> ${esc(t.autor)} |
+                            <strong>Tutor:</strong> ${esc(t.tutor)} |
+                            <strong>Carrera:</strong> ${esc(t.carrera)} (${esc(t.anio)})
+                        </p>
+                        <p class="text-gray-500 text-xs italic bg-white p-2 rounded border border-gray-100">${esc(t.resumen)}</p>
+
+                        <div class="flex gap-2 pt-1">
+                            <button onclick="prepararEdicion(${t.id})" class="bg-amber-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-amber-600 transition font-medium shadow-2xs">
+                                ✏️ Editar Tesis
+                            </button>
+                            <button onclick="eliminarTesis(${t.id})" class="bg-red-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-red-700 transition font-medium shadow-2xs">
+                                🗑️ Eliminar Tesis
+                            </button>
+                        </div>
+
+                        <div class="mt-3 pt-3 border-t border-gray-200 bg-white p-3 rounded-lg border border-gray-200 shadow-2xs">
+                            <p class="text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Atender Solicitud de Estudiante (En Mostrador):</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
+                                <input type="text" id="nombre-${t.id}" placeholder="Nombre del estudiante" class="p-1.5 border rounded text-xs focus:ring-1 focus:ring-iutirlaBlue outline-none">
+                                <input type="text" id="cedula-${t.id}" placeholder="Cédula de identidad" class="p-1.5 border rounded text-xs focus:ring-1 focus:ring-iutirlaBlue outline-none">
+                                <input type="email" id="correo-${t.id}" placeholder="Correo electrónico" class="p-1.5 border rounded text-xs focus:ring-1 focus:ring-iutirlaBlue outline-none">
+                            </div>
+                            <button onclick="solicitudYEnviar(${t.id})" class="w-full sm:w-auto bg-emerald-600 text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-emerald-700 transition shadow-sm">
+                                ✉️ Registrar Solicitud y Enviar PDF al Correo
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function solicitudYEnviar(tesisId) {
+            const nombre = document.getElementById(`nombre-${tesisId}`).value;
+            const cedula = document.getElementById(`cedula-${tesisId}`).value;
+            const correo = document.getElementById(`correo-${tesisId}`).value;
+
+            if (!nombre || !cedula || !correo) {
+                alert("Por favor complete los datos del estudiante en el mostrador (Nombre, Cédula y Correo).");
+                return;
+            }
+
+            const formData = new URLSearchParams();
+            formData.append("tesis_id", tesisId);
+            formData.append("nombre", nombre);
+            formData.append("cedula", cedula);
+            formData.append("correo", correo);
+
+            const resSolicitud = await fetch(`${API_URL}/solicitudes/crear`, {
+                method: "POST",
+                body: formData
+            });
+
+            if (!resSolicitud.ok) {
+                alert("Error al registrar la solicitud en el sistema.");
+                return;
+            }
+
+            const dataSolicitud = await resSolicitud.json();
+            const solicitudId = dataSolicitud.id;
+
+            const resAprobar = await fetch(`${API_URL}/solicitudes/aprobar/${solicitudId}`, {
+                method: "POST"
+            });
+
+            if (resAprobar.ok) {
+                alert("¡Éxito! La solicitud fue registrada y el archivo PDF de la tesis fue enviado al correo del estudiante.");
+                document.getElementById(`nombre-${tesisId}`).value = "";
+                document.getElementById(`cedula-${tesisId}`).value = "";
+                document.getElementById(`correo-${tesisId}`).value = "";
+            } else {
+                alert("La solicitud se guardó, pero hubo un fallo al disparar el envío del correo SMTP. Revise las credenciales.");
+            }
+        }
+    </script>
+</body>
+</html>
