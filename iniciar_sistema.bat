@@ -16,6 +16,6 @@ start http://127.0.0.1:8000/static/index.html
 echo.
 echo ========================================================
 echo   ¡SISTEMA ACTIVO! 
-echo   (No cierre esta ventana negra mientras la biblioteca esté abierta).
+echo   (No cierre esta ventana negra mientras esté abierta).
 echo ========================================================
 pause
