@@ -3,337 +3,542 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión y Control de Trabajos Especiales de Grado (TEG) - IUTIRLA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        iutirlaBlue: '#1e3a8a',
-                        iutirlaRed: '#dc2626',
-                        iutirlaYellow: '#facc15',
-                    }
-                }
+    <title>Sistema de Gestión y Control de Tesis - IUTIRLA</title>
+    <style>
+        :root {
+            --azul: #1e3a8a;
+            --azul-oscuro: #172554;
+            --rojo: #dc2626;
+            --rojo-oscuro: #b91c1c;
+            --amarillo: #facc15;
+            --ambar: #d97706;
+            --ambar-oscuro: #b45309;
+            --esmeralda: #059669;
+            --esmeralda-oscuro: #047857;
+            --fondo: #f3f4f6;
+            --blanco: #ffffff;
+            --borde: #e5e7eb;
+            --texto: #1e293b;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--fondo);
+            color: var(--texto);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.45;
+        }
+
+        .header {
+            background: linear-gradient(90deg, var(--azul) 0%, #1e40af 100%);
+            color: var(--blanco);
+            border-bottom: 4px solid var(--rojo);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+            padding: 16px 24px;
+            margin-bottom: 28px;
+        }
+
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-title {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .header-sub {
+            margin: 2px 0 0;
+            font-size: 12px;
+            color: #dbeafe;
+            font-weight: 500;
+        }
+
+        .main-grid {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px 48px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        @media (min-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 380px 1fr;
+                align-items: start;
             }
         }
-    </script>
-</head>
-<body class="bg-gray-100 text-slate-800 font-sans">
 
-    <header class="bg-gradient-to-r from-iutirlaBlue to-blue-900 text-white shadow-lg border-b-4 border-iutirlaRed py-4 px-6 mb-8">
-        <div class="max-w-7xl mx-auto flex items-center gap-4">
+        .card {
+            background-color: var(--blanco);
+            border: 1px solid var(--borde);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--borde);
+        }
+
+        .dot-rojo {
+            width: 11px;
+            height: 11px;
+            border-radius: 999px;
+            background-color: var(--rojo);
+            flex-shrink: 0;
+        }
+
+        .dot-azul {
+            width: 11px;
+            height: 11px;
+            border-radius: 999px;
+            background-color: var(--azul);
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--azul);
+        }
+
+        .form-stack > * + * {
+            margin-top: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-family: inherit;
+            color: var(--texto);
+            background-color: var(--blanco);
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--azul);
+            box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.16);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        @media (min-width: 640px) {
+            .grid-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        input[type="file"] {
+            width: 100%;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        input[type="file"]::file-selector-button {
+            margin-right: 10px;
+            padding: 6px 12px;
+            border: 0;
+            border-radius: 8px;
+            background-color: #eff6ff;
+            color: var(--azul);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background-color: #dbeafe;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: background-color 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 9px 14px;
+            background-color: var(--azul);
+            color: var(--blanco);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--azul-oscuro);
+        }
+
+        .btn-editar-form {
+            background-color: var(--ambar);
+            color: var(--blanco);
+        }
+
+        .btn-editar-form:hover {
+            background-color: var(--ambar-oscuro);
+        }
+
+        .btn-cancelar {
+            width: 100%;
+            padding: 7px 12px;
+            margin-top: 6px;
+            background-color: #d1d5db;
+            color: #374151;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .btn-cancelar:hover {
+            background-color: #9ca3af;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 13.5px;
+        }
+
+        .btn-buscar {
+            background-color: var(--rojo);
+            color: var(--blanco);
+            padding: 10px 20px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .btn-buscar:hover {
+            background-color: var(--rojo-oscuro);
+        }
+
+        .resultados-box {
+            margin-top: 16px;
+            max-height: 540px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .resultados-box > * + * {
+            margin-top: 14px;
+        }
+
+        .empty-msg {
+            font-size: 13px;
+            color: #9ca3af;
+            font-style: italic;
+            text-align: center;
+            padding: 24px 12px;
+            margin: 0;
+        }
+
+        .tesis-item {
+            padding: 16px;
+            background-color: #f9fafb;
+            border: 1px solid var(--borde);
+            border-radius: 12px;
+            font-size: 13px;
+        }
+
+        .tesis-item > * + * {
+            margin-top: 8px;
+        }
+
+        .tesis-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .tesis-titulo {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--azul);
+        }
+
+        .cota-badge {
+            font-size: 11.5px;
+            background-color: #e5e7eb;
+            color: #374151;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .tesis-meta {
+            margin: 0;
+            font-size: 12px;
+            color: #4b5563;
+        }
+
+        .tesis-resumen {
+            margin: 0;
+            font-size: 12px;
+            color: #6b7280;
+            font-style: italic;
+            background-color: var(--blanco);
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .acciones-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-top: 4px;
+        }
+
+        .btn-sm-amber {
+            background-color: #f59e0b;
+            color: var(--blanco);
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+
+        .btn-sm-amber:hover {
+            background-color: var(--ambar);
+        }
+
+        .btn-sm-red {
+            background-color: var(--rojo);
+            color: var(--blanco);
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+
+        .btn-sm-red:hover {
+            background-color: var(--rojo-oscuro);
+        }
+
+        .solicitud-box {
+            margin-top: 12px;
+            padding: 12px;
+            background-color: var(--blanco);
+            border: 1px solid var(--borde);
+            border-radius: 8px;
+        }
+
+        .solicitud-label {
+            margin: 0 0 8px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .solicitud-box input {
+            padding: 6px 8px;
+            font-size: 12px;
+        }
+
+        .btn-enviar {
+            width: 100%;
+            background-color: var(--esmeralda);
+            color: var(--blanco);
+            font-size: 12px;
+            padding: 8px 16px;
+        }
+
+        @media (min-width: 640px) {
+            .btn-enviar {
+                width: auto;
+            }
+        }
+
+        .btn-enviar:hover {
+            background-color: var(--esmeralda-oscuro);
+        }
+
+        .footer {
+            background-color: #0f172a;
+            color: var(--blanco);
+            text-align: center;
+            padding: 16px;
+            font-size: 12px;
+            border-top: 1px solid #1e293b;
+        }
+
+        .footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
             <div>
-                <h1 class="text-xl md:text-2xl font-extrabold tracking-wide text-white">I.U.T.I.R.L.A.</h1>
-                <p class="text-xs text-blue-200 font-medium">Instituto Universitario de Tecnología Industrial "Rodolfo Loero Arismendi" - Extensión Cumaná</p>
+                <h1 class="header-title">I.U.T.I.R.L.A.</h1>
+                <p class="header-sub">Instituto Universitario de Tecnología Industrial "Rodolfo Loero Arismendi"</p>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-6 pb-12">
+    <main class="main-grid">
 
-        <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 lg:col-span-1">
-            <div class="flex items-center gap-2 mb-4 border-b pb-3">
-                <div class="w-3 h-3 bg-iutirlaRed rounded-full"></div>
-                <h2 class="text-base font-bold text-iutirlaBlue" id="titulo-seccion-form">Registrar Nuevo TEG</h2>
+        <section class="card">
+            <div class="card-header">
+                <div class="dot-rojo"></div>
+                <h2 class="card-title" id="titulo-seccion-form">Registrar Nueva Tesis</h2>
             </div>
 
-            <form id="form-registrar" onsubmit="registrarTEG(event)" class="space-y-3 text-sm">
+            <form id="form-registrar" onsubmit="registrarTesis(event)" class="form-stack">
                 <div>
-                    <label class="block font-semibold text-gray-700 text-xs uppercase">Título del Trabajo</label>
-                    <input type="text" id="titulo" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs">
+                    <label for="titulo">Título del Trabajo</label>
+                    <input type="text" id="titulo" required>
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 text-xs uppercase">Autor(es)</label>
-                    <input type="text" id="autor" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs">
+                    <label for="autor">Autor(es)</label>
+                    <input type="text" id="autor" required>
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 text-xs uppercase">Tutor</label>
-                    <input type="text" id="tutor" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs">
+                    <label for="tutor">Tutor</label>
+                    <input type="text" id="tutor" required>
                 </div>
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid-2">
                     <div>
-                        <label class="block font-semibold text-gray-700 text-xs uppercase">Carrera</label>
-                        <input type="text" id="carrera" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs">
+                        <label for="carrera">Carrera</label>
+                        <input type="text" id="carrera" required>
                     </div>
                     <div>
-                        <label class="block font-semibold text-gray-700 text-xs uppercase">Año</label>
-                        <input type="number" id="anio" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs">
+                        <label for="anio">Año</label>
+                        <input type="number" id="anio" required>
                     </div>
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 text-xs uppercase">Cota Digital (Ej: INF-2026-01)</label>
-                    <input type="text" id="cota" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs">
+                    <label for="cota">Cota Digital (Ej: INF-2026-01)</label>
+                    <input type="text" id="cota" required>
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 text-xs uppercase">Resumen</label>
-                    <textarea id="resumen" rows="2" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-iutirlaBlue outline-none text-xs"></textarea>
+                    <label for="resumen">Resumen</label>
+                    <textarea id="resumen" rows="2" required></textarea>
                 </div>
                 <div id="contenedor-archivo">
-                    <label class="block font-semibold text-gray-700 text-xs uppercase">Archivo PDF Digital</label>
-                    <input type="file" id="archivo" accept="application/pdf" class="w-full mt-1 text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-iutirlaBlue hover:file:bg-blue-100">
+                    <label for="archivo">Archivo PDF Digital</label>
+                    <input type="file" id="archivo" accept="application/pdf">
                 </div>
-                <button type="submit" class="w-full bg-iutirlaBlue text-white font-medium py-2 rounded-lg hover:bg-blue-900 transition shadow text-xs uppercase tracking-wider">
-                    Guardar TEG en el Sistema
+                <button type="submit" class="btn btn-primary">
+                    Guardar Tesis en el Sistema
                 </button>
-                <button type="button" id="btn-cancelar" onclick="restaurarFormularioRegistro()" class="w-full bg-gray-300 text-gray-700 font-medium py-1.5 rounded-lg hover:bg-gray-400 transition text-xs uppercase tracking-wider hidden mt-1">
+                <button type="button" id="btn-cancelar" onclick="restaurarFormularioRegistro()" class="btn btn-cancelar hidden">
                     Cancelar Edición
                 </button>
             </form>
         </section>
 
-        <section class="space-y-6 lg:col-span-2">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                <div class="flex items-center gap-2 mb-4 border-b pb-3">
-                    <div class="w-3 h-3 bg-iutirlaBlue rounded-full"></div>
-                    <h2 class="text-base font-bold text-iutirlaBlue">Catálogo y Control de Solicitudes</h2>
+        <section>
+            <div class="card">
+                <div class="card-header">
+                    <div class="dot-azul"></div>
+                    <h2 class="card-title">Catálogo y Control de Solicitudes</h2>
                 </div>
 
-                <div class="flex gap-2">
-                    <input type="text" id="input-buscar" placeholder="Escriba título, autor, carrera o cota para buscar..." class="flex-1 p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-iutirlaBlue outline-none">
-                    <button onclick="buscarTEG()" class="bg-iutirlaRed text-white px-5 py-2.5 rounded-lg text-sm hover:bg-red-700 transition font-medium shadow-sm">
-                        Buscar TEG
+                <div class="search-bar">
+                    <input type="text" id="input-buscar" placeholder="Escriba título, autor, carrera o cota para buscar...">
+                    <button type="button" onclick="buscarTesis()" class="btn btn-buscar">
+                        Buscar Tesis
                     </button>
                 </div>
 
-                <div id="resultados-busqueda" class="mt-4 space-y-4 max-h-[500px] overflow-y-auto pr-1">
-                    <p class="text-sm text-gray-400 italic text-center py-6">Realice una búsqueda o registre un TEG para comenzar la gestión de atención al estudiante.</p>
+                <div id="resultados-busqueda" class="resultados-box">
+                    <p class="empty-msg">Realice una búsqueda o registre una tesis para comenzar la gestión de atención al estudiante.</p>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <footer class="bg-slate-900 text-white text-center py-4 text-xs border-t border-slate-800">
-        <p>IUTIRLA Extensión • Sistema Automatizado de Gestión de Trabajos Especiales de Grado (TEG) © 2026</p>
+    <footer class="footer">
+        <p>IUTIRLA Extensión • Sistema Automatizado de Gestión de Tesis y Trabajos de Grado © 2026</p>
     </footer>
 
     <script>
         const API_URL = window.location.origin;
-        let tegEditandoId = null;
-        const tegCache = {};
+        let tesisEditandoId = null;
+        const tesisCache = {};
 
-        // Escapa HTML para evitar problemas con apóstrofos, comillas o etiquetas
         function esc(s) {
             return String(s ?? '').replace(/[&<>"']/g, c => ({
                 '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
             }[c]));
         }
 
-        async function registrarTEG(e) {
+        async function registrarTesis(e) {
             e.preventDefault();
 
             const titulo  = document.getElementById("titulo").value;
             const autor   = document.getElementById("autor").value;
             const tutor   = document.getElementById("tutor").value;
-            const carrera = document.getElementById("carrera").value;
-            const anio    = document.getElementById("anio").value;
-            const resumen = document.getElementById("resumen").value;
-            const cota    = document.getElementById("cota").value;
-
-            if (tegEditandoId !== null) {
-                const formData = new URLSearchParams();
-                formData.append("titulo", titulo);
-                formData.append("autor", autor);
-                formData.append("tutor", tutor);
-                formData.append("carrera", carrera);
-                formData.append("anio", anio);
-                formData.append("resumen", resumen);
-                formData.append("cota_digital", cota);
-
-                const res = await fetch(`${API_URL}/tesis/actualizar/${tegEditandoId}`, {
-                    method: "PUT",
-                    body: formData
-                });
-
-                if (res.ok) {
-                    alert("¡TEG actualizado con éxito en el sistema!");
-                    restaurarFormularioRegistro();
-                    buscarTEG();
-                } else {
-                    alert("Error al actualizar el TEG. Verifique los datos.");
-                }
-            } else {
-                const archivoInput = document.getElementById("archivo").files[0];
-                if (!archivoInput) {
-                    alert("Debe seleccionar un archivo PDF para registrar el TEG.");
-                    return;
-                }
-
-                const formData = new FormData();
-                formData.append("titulo", titulo);
-                formData.append("autor", autor);
-                formData.append("tutor", tutor);
-                formData.append("carrera", carrera);
-                formData.append("anio", anio);
-                formData.append("resumen", resumen);
-                formData.append("cota_digital", cota);
-                formData.append("archivo", archivoInput);
-
-                const res = await fetch(`${API_URL}/tesis/registrar`, {
-                    method: "POST",
-                    body: formData
-                });
-
-                if (res.ok) {
-                    alert("¡TEG registrado con éxito en el servidor del IUTIRLA!");
-                    restaurarFormularioRegistro();
-                    buscarTEG();
-                } else {
-                    alert("Error al registrar el TEG. Verifique los datos o si la cota ya existe.");
-                }
-            }
-        }
-
-        function prepararEdicion(id) {
-            const t = tegCache[id];
-            if (!t) return;
-
-            tegEditandoId = id;
-            document.getElementById("titulo").value  = t.titulo;
-            document.getElementById("autor").value   = t.autor;
-            document.getElementById("tutor").value   = t.tutor;
-            document.getElementById("carrera").value = t.carrera;
-            document.getElementById("anio").value    = t.anio;
-            document.getElementById("resumen").value = t.resumen;
-            document.getElementById("cota").value    = t.cota_digital;
-
-            document.getElementById("titulo-seccion-form").textContent = "Editar TEG Registrado";
-            const botonGuardar = document.querySelector("#form-registrar button[type='submit']");
-            botonGuardar.textContent = "Actualizar TEG en el Sistema";
-            botonGuardar.classList.remove("bg-iutirlaBlue", "hover:bg-blue-900");
-            botonGuardar.classList.add("bg-amber-600", "hover:bg-amber-700");
-
-            document.getElementById("btn-cancelar").classList.remove("hidden");
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function restaurarFormularioRegistro() {
-            document.getElementById("form-registrar").reset();
-            tegEditandoId = null;
-            document.getElementById("titulo-seccion-form").textContent = "Registrar Nuevo TEG";
-
-            const botonGuardar = document.querySelector("#form-registrar button[type='submit']");
-            botonGuardar.textContent = "Guardar TEG en el Sistema";
-            botonGuardar.classList.remove("bg-amber-600", "hover:bg-amber-700");
-            botonGuardar.classList.add("bg-iutirlaBlue", "hover:bg-blue-900");
-
-            document.getElementById("btn-cancelar").classList.add("hidden");
-        }
-
-        async function eliminarTEG(tegId) {
-            if (!confirm("¿Estás seguro de que deseas eliminar este TEG del sistema? Esta acción eliminará el registro y el archivo PDF asociado.")) {
-                return;
-            }
-
-            const res = await fetch(`${API_URL}/tesis/eliminar/${tegId}`, {
-                method: "DELETE"
-            });
-
-            if (res.ok) {
-                alert("TEG eliminado correctamente.");
-                buscarTEG();
-            } else {
-                alert("Error al intentar eliminar el TEG.");
-            }
-        }
-
-        async function buscarTEG() {
-            const texto = document.getElementById("input-buscar").value;
-            const res = await fetch(`${API_URL}/tesis/buscar?texto=${encodeURIComponent(texto)}`);
-            const tegList = await res.json();
-
-            const contenedor = document.getElementById("resultados-busqueda");
-            contenedor.innerHTML = "";
-
-            if (tegList.length === 0) {
-                contenedor.innerHTML = `<p class="text-sm text-gray-500 italic text-center py-4">No se encontraron Trabajos Especiales de Grado (TEG) registrados con ese criterio.</p>`;
-                return;
-            }
-
-            tegList.forEach(t => {
-                tegCache[t.id] = t;  // Guardamos para editar sin pasar strings
-
-                contenedor.innerHTML += `
-                    <div class="p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm space-y-2 hover:bg-blue-50/30 transition">
-                        <div class="flex justify-between items-start gap-2">
-                            <h3 class="font-bold text-iutirlaBlue text-base">${esc(t.titulo)}</h3>
-                            <span class="text-xs bg-gray-200 text-gray-700 px-2.5 py-1 rounded-md font-mono font-semibold whitespace-nowrap">${esc(t.cota_digital)}</span>
-                        </div>
-                        <p class="text-gray-600 text-xs">
-                            <strong>Autor:</strong> ${esc(t.autor)} |
-                            <strong>Tutor:</strong> ${esc(t.tutor)} |
-                            <strong>Carrera:</strong> ${esc(t.carrera)} (${esc(t.anio)})
-                        </p>
-                        <p class="text-gray-500 text-xs italic bg-white p-2 rounded border border-gray-100">${esc(t.resumen)}</p>
-
-                        <div class="flex gap-2 pt-1">
-                            <button onclick="prepararEdicion(${t.id})" class="bg-amber-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-amber-600 transition font-medium shadow-2xs">
-                                ✏️ Editar TEG
-                            </button>
-                            <button onclick="eliminarTEG(${t.id})" class="bg-red-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-red-700 transition font-medium shadow-2xs">
-                                🗑️ Eliminar TEG
-                            </button>
-                        </div>
-
-                        <div class="mt-3 pt-3 border-t border-gray-200 bg-white p-3 rounded-lg border border-gray-200 shadow-2xs">
-                            <p class="text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Atender Solicitud de Estudiante (En Mostrador):</p>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
-                                <input type="text"  id="nombre-${t.id}" placeholder="Nombre del estudiante" class="p-1.5 border rounded text-xs focus:ring-1 focus:ring-iutirlaBlue outline-none">
-                                <input type="text"  id="cedula-${t.id}" placeholder="Cédula de identidad"    class="p-1.5 border rounded text-xs focus:ring-1 focus:ring-iutirlaBlue outline-none">
-                                <input type="email" id="correo-${t.id}" placeholder="Correo electrónico"     class="p-1.5 border rounded text-xs focus:ring-1 focus:ring-iutirlaBlue outline-none">
-                            </div>
-                            <button onclick="solicitudYEnviar(${t.id})" class="w-full sm:w-auto bg-emerald-600 text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-emerald-700 transition shadow-sm">
-                                ✉️ Registrar Solicitud y Enviar PDF al Correo
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        async function solicitudYEnviar(tegId) {
-            const nombre = document.getElementById(`nombre-${tegId}`).value;
-            const cedula = document.getElementById(`cedula-${tegId}`).value;
-            const correo = document.getElementById(`correo-${tegId}`).value;
-
-            if (!nombre || !cedula || !correo) {
-                alert("Por favor complete los datos del estudiante en el mostrador (Nombre, Cédula y Correo).");
-                return;
-            }
-
-            const formData = new URLSearchParams();
-            formData.append("tesis_id", tegId);
-            formData.append("nombre", nombre);
-            formData.append("cedula", cedula);
-            formData.append("correo", correo);
-
-            const resSolicitud = await fetch(`${API_URL}/solicitudes/crear`, {
-                method: "POST",
-                body: formData
-            });
-
-            if (!resSolicitud.ok) {
-                alert("Error al registrar la solicitud en el sistema.");
-                return;
-            }
-
-            const dataSolicitud = await resSolicitud.json();
-            const solicitudId = dataSolicitud.id;
-
-            const resAprobar = await fetch(`${API_URL}/solicitudes/aprobar/${solicitudId}`, {
-                method: "POST"
-            });
-
-            if (resAprobar.ok) {
-                alert("¡Éxito! La solicitud fue registrada y el archivo PDF del TEG fue enviado al correo del estudiante.");
-                document.getElementById(`nombre-${tegId}`).value = "";
-                document.getElementById(`cedula-${tegId}`).value = "";
-                document.getElementById(`correo-${tegId}`).value = "";
-            } else {
-                alert("La solicitud se guardó, pero hubo un fallo al disparar el envío del correo SMTP. Revise las credenciales.");
-            }
-        }
-    </script>
-</body>
-</html>
+            const carrera = document.getElementById("carrera
