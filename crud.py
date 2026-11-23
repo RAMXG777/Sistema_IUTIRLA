@@ -85,7 +85,6 @@ def actualizar_tesis(
     db.refresh(tesis)
     return tesis
 
-# 7. Eliminar una tesis de la base de datos y su archivo físico
 
 def eliminar_tesis(db: Session, tesis_id: int):
 
@@ -98,11 +97,11 @@ def eliminar_tesis(db: Session, tesis_id: int):
 
         
 
-    # 2. ELIMINAR SOLICITUDES ASOCIADAS usando models.SolicitudTesis (evita restricciones NOT NULL)
+    
     db.query(models.SolicitudTesis).filter(models.SolicitudTesis.tesis_id == tesis_id).delete()
 
 
-    # 3. Borrar el archivo PDF físico asociado en el disco si existe
+   
     if teg.archivo_pdf and os.path.exists(teg.archivo_pdf):
 
         try:
@@ -115,7 +114,7 @@ def eliminar_tesis(db: Session, tesis_id: int):
 
             
 
-    # 4. Eliminar el registro del TEG de la base de datos
+    
     db.delete(teg)
 
     db.commit()
