@@ -6,8 +6,8 @@ import os
 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-CORREO_EMISOR = "lordrasg@gmail.com"
-PASSWORD_EMISOR = "myjw unrw joyx umco"
+CORREO_EMISOR = "iutirlatesis@gmail.com"
+PASSWORD_EMISOR = "vivn jhen fmzo dbmv"
 
 def enviar_tesis_por_correo(correo_destino: str, nombre_estudiante: str, titulo_tesis: str, ruta_pdf: str):
     mensaje = MIMEMultipart()

@@ -16,7 +16,6 @@ start http://127.0.0.1:8000/static/index.html
 echo.
 echo ========================================================
 echo   ¡SISTEMA ACTIVO! 
-echo   La profesora ya puede usar el programa con total normalidad.
 echo   (No cierre esta ventana negra mientras la biblioteca esté abierta).
 echo ========================================================
 pause

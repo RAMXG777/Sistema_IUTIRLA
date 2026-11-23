@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 import models
+import os
 
 def registrar_tesis(
     db: Session, 
@@ -85,18 +86,40 @@ def actualizar_tesis(
     return tesis
 
 # 7. Eliminar una tesis de la base de datos y su archivo físico
+
 def eliminar_tesis(db: Session, tesis_id: int):
-    tesis = db.query(models.Tesis).filter(models.Tesis.id == tesis_id).first()
-    if not tesis:
+
+    # 1. Buscar el registro del TEG usando models.Tesis
+    teg = db.query(models.Tesis).filter(models.Tesis.id == tesis_id).first()
+
+    if not teg:
+
         return None
-    
-    # Eliminar el archivo PDF del servidor si existe
-    if tesis.archivo_pdf and os.path.exists(tesis.archivo_pdf):
+
+        
+
+    # 2. ELIMINAR SOLICITUDES ASOCIADAS usando models.SolicitudTesis (evita restricciones NOT NULL)
+    db.query(models.SolicitudTesis).filter(models.SolicitudTesis.tesis_id == tesis_id).delete()
+
+
+    # 3. Borrar el archivo PDF físico asociado en el disco si existe
+    if teg.archivo_pdf and os.path.exists(teg.archivo_pdf):
+
         try:
-            os.remove(tesis.archivo_pdf)
+
+            os.remove(teg.archivo_pdf)
+
         except Exception as e:
-            print(f"No se pudo eliminar el archivo físico: {e}")
+
+            print(f"Error borrando archivo físico: {e}")
+
             
-    db.delete(tesis)
+
+    # 4. Eliminar el registro del TEG de la base de datos
+    db.delete(teg)
+
     db.commit()
-    return tesis
+
+    
+
+    return teg
