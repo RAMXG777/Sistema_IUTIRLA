@@ -211,6 +211,7 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
+            text-decoration: none;
         }
 
         .btn-primary {
@@ -357,6 +358,17 @@
             flex-wrap: wrap;
             gap: 8px;
             padding-top: 4px;
+        }
+
+        .btn-sm-blue {
+            background-color: var(--azul);
+            color: var(--blanco);
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+
+        .btn-sm-blue:hover {
+            background-color: var(--azul-oscuro);
         }
 
         .btn-sm-amber {
@@ -535,10 +547,235 @@
             }[c]));
         }
 
+        async function obtenerDetalleError(res, mensajePorDefecto) {
+            try {
+                const data = await res.json();
+                if (data && data.detail) {
+                    return typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail);
+                }
+            } catch (_) {}
+            return mensajePorDefecto;
+        }
+
         async function registrarTesis(e) {
             e.preventDefault();
 
             const titulo  = document.getElementById("titulo").value;
             const autor   = document.getElementById("autor").value;
             const tutor   = document.getElementById("tutor").value;
-            const carrera = document.getElementById("carrera
+            const carrera = document.getElementById("carrera").value;
+            const anio    = document.getElementById("anio").value;
+            const resumen = document.getElementById("resumen").value;
+            const cota    = document.getElementById("cota").value;
+
+            if (tesisEditandoId !== null) {
+                const formData = new URLSearchParams();
+                formData.append("titulo", titulo);
+                formData.append("autor", autor);
+                formData.append("tutor", tutor);
+                formData.append("carrera", carrera);
+                formData.append("anio", anio);
+                formData.append("resumen", resumen);
+                formData.append("cota_digital", cota);
+
+                const res = await fetch(`${API_URL}/tesis/actualizar/${tesisEditandoId}`, {
+                    method: "PUT",
+                    body: formData
+                });
+
+                if (res.ok) {
+                    alert("¡Tesis actualizada con éxito en el sistema!");
+                    restaurarFormularioRegistro();
+                    buscarTesis();
+                } else {
+                    const detalle = await obtenerDetalleError(res, "Error al actualizar la tesis. Verifique los datos.");
+                    alert(detalle);
+                }
+            } else {
+                const archivoInput = document.getElementById("archivo").files[0];
+                if (!archivoInput) {
+                    alert("Debe seleccionar un archivo PDF para registrar la tesis.");
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("titulo", titulo);
+                formData.append("autor", autor);
+                formData.append("tutor", tutor);
+                formData.append("carrera", carrera);
+                formData.append("anio", anio);
+                formData.append("resumen", resumen);
+                formData.append("cota_digital", cota);
+                formData.append("archivo", archivoInput);
+
+                const res = await fetch(`${API_URL}/tesis/registrar`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (res.ok) {
+                    alert("¡Tesis registrada con éxito en el servidor del IUTIRLA!");
+                    restaurarFormularioRegistro();
+                    buscarTesis();
+                } else {
+                    const detalle = await obtenerDetalleError(res, "Error al registrar la tesis. Verifique los datos o si la cota ya existe.");
+                    alert(detalle);
+                }
+            }
+        }
+
+        function prepararEdicion(id) {
+            const t = tesisCache[id];
+            if (!t) return;
+
+            tesisEditandoId = id;
+            document.getElementById("titulo").value  = t.titulo;
+            document.getElementById("autor").value   = t.autor;
+            document.getElementById("tutor").value   = t.tutor;
+            document.getElementById("carrera").value = t.carrera;
+            document.getElementById("anio").value    = t.anio;
+            document.getElementById("resumen").value = t.resumen;
+            document.getElementById("cota").value    = t.cota_digital;
+
+            document.getElementById("titulo-seccion-form").textContent = "Editar Tesis Registrada";
+            const botonGuardar = document.querySelector("#form-registrar button[type='submit']");
+            botonGuardar.textContent = "Actualizar Tesis en el Sistema";
+            botonGuardar.classList.add("btn-editar-form");
+
+            document.getElementById("btn-cancelar").classList.remove("hidden");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function restaurarFormularioRegistro() {
+            document.getElementById("form-registrar").reset();
+            tesisEditandoId = null;
+            document.getElementById("titulo-seccion-form").textContent = "Registrar Nueva Tesis";
+
+            const botonGuardar = document.querySelector("#form-registrar button[type='submit']");
+            botonGuardar.textContent = "Guardar Tesis en el Sistema";
+            botonGuardar.classList.remove("btn-editar-form");
+
+            document.getElementById("btn-cancelar").classList.add("hidden");
+        }
+
+        async function eliminarTesis(tesisId) {
+            if (!confirm("¿Estás seguro de que deseas eliminar esta tesis del sistema? Esta acción eliminará el registro y el archivo PDF asociado.")) {
+                return;
+            }
+
+            const res = await fetch(`${API_URL}/tesis/eliminar/${tesisId}`, {
+                method: "DELETE"
+            });
+
+            if (res.ok) {
+                alert("Tesis eliminada correctamente.");
+                buscarTesis();
+            } else {
+                const detalle = await obtenerDetalleError(res, "Error al intentar eliminar la tesis.");
+                alert(detalle);
+            }
+        }
+
+        async function buscarTesis() {
+            const texto = document.getElementById("input-buscar").value;
+            const res = await fetch(`${API_URL}/tesis/buscar?texto=${encodeURIComponent(texto)}`);
+            const tesisList = await res.json();
+
+            const contenedor = document.getElementById("resultados-busqueda");
+            contenedor.innerHTML = "";
+
+            if (!Array.isArray(tesisList) || tesisList.length === 0) {
+                contenedor.innerHTML = `<p class="empty-msg">No se encontraron tesis registradas con ese criterio.</p>`;
+                return;
+            }
+
+            tesisList.forEach(t => {
+                tesisCache[t.id] = t;
+
+                contenedor.innerHTML += `
+                    <div class="tesis-item">
+                        <div class="tesis-top">
+                            <h3 class="tesis-titulo">${esc(t.titulo)}</h3>
+                            <span class="cota-badge">${esc(t.cota_digital)}</span>
+                        </div>
+                        <p class="tesis-meta">
+                            <strong>Autor:</strong> ${esc(t.autor)} |
+                            <strong>Tutor:</strong> ${esc(t.tutor)} |
+                            <strong>Carrera:</strong> ${esc(t.carrera)} (${esc(t.anio)})
+                        </p>
+                        <p class="tesis-resumen">${esc(t.resumen)}</p>
+
+                        <div class="acciones-row">
+                            <a href="${API_URL}/tesis/ver/${t.id}" target="_blank" rel="noopener" class="btn btn-sm-blue">
+                                📄 Ver / Descargar PDF
+                            </a>
+                            <button type="button" onclick="prepararEdicion(${t.id})" class="btn btn-sm-amber">
+                                ✏️ Editar Tesis
+                            </button>
+                            <button type="button" onclick="eliminarTesis(${t.id})" class="btn btn-sm-red">
+                                🗑️ Eliminar Tesis
+                            </button>
+                        </div>
+
+                        <div class="solicitud-box">
+                            <p class="solicitud-label">Atender Solicitud de Estudiante (En Mostrador):</p>
+                            <div class="grid-3">
+                                <input type="text"  id="nombre-${t.id}" placeholder="Nombre del estudiante">
+                                <input type="text"  id="cedula-${t.id}" placeholder="Cédula de identidad">
+                                <input type="email" id="correo-${t.id}" placeholder="Correo electrónico">
+                            </div>
+                            <button type="button" onclick="solicitudYEnviar(${t.id})" class="btn btn-enviar">
+                                ✉️ Registrar Solicitud y Enviar PDF al Correo
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function solicitudYEnviar(tesisId) {
+            const nombre = document.getElementById(`nombre-${tesisId}`).value;
+            const cedula = document.getElementById(`cedula-${tesisId}`).value;
+            const correo = document.getElementById(`correo-${tesisId}`).value;
+
+            if (!nombre || !cedula || !correo) {
+                alert("Por favor complete los datos del estudiante en el mostrador (Nombre, Cédula y Correo).");
+                return;
+            }
+
+            const formData = new URLSearchParams();
+            formData.append("tesis_id", tesisId);
+            formData.append("nombre", nombre);
+            formData.append("cedula", cedula);
+            formData.append("correo", correo);
+
+            const resSolicitud = await fetch(`${API_URL}/solicitudes/crear`, {
+                method: "POST",
+                body: formData
+            });
+
+            if (!resSolicitud.ok) {
+                const detalle = await obtenerDetalleError(resSolicitud, "Error al registrar la solicitud en el sistema.");
+                alert(detalle);
+                return;
+            }
+
+            const dataSolicitud = await resSolicitud.json();
+            const solicitudId = dataSolicitud.id;
+
+            const resAprobar = await fetch(`${API_URL}/solicitudes/aprobar/${solicitudId}`, {
+                method: "POST"
+            });
+
+            if (resAprobar.ok) {
+                alert("¡Éxito! La solicitud fue registrada y el archivo PDF de la tesis fue enviado al correo del estudiante.");
+                document.getElementById(`nombre-${tesisId}`).value = "";
+                document.getElementById(`cedula-${tesisId}`).value = "";
+                document.getElementById(`correo-${tesisId}`).value = "";
+            } else {
+                alert("La solicitud se guardó, pero hubo un fallo al disparar el envío del correo SMTP. Revise las credenciales.");
+            }
+        }
+    </script>
+</body>
+</html>
